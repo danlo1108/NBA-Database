@@ -492,42 +492,32 @@ def get_gameids(engine):
 import time
 def update_play_by_play(engine,game_id_list):
 	cnt=0
-	cnt_success=0.0
-	cnt_fail=0.0
 	print('Total Games: ',len(game_id_list))
 	for game_id in game_id_list:
-		# append_team_boxscores(game_id,engine)
-		# cnt+=1
-		# if np.mod(cnt,40)==0:
-		# 	print(str(round(float(cnt*100.0/len(game_id_list)),2))+'%')
-		
+
 		try:
 			append_pbp(game_id,engine)
 			cnt+=1
-			cnt_success+=1
 			if np.mod(cnt,50)==0:
 				print(str(round(float(cnt*100.0/len(game_id_list)),2))+'%')
 			
 		except:
-			cnt_fail+=1
 			cnt+=1
+
+			bad_gameid_df=pd.DataFrame({'game_id':[game_id],'table':['team_boxscores']})
+			bad_gameid_df.to_sql('bad_gameids',
+								  con=engine,
+								  schema='nba',
+								  index=False,
+								  if_exists='append',
+								  dtype={'game_id': sa.types.INTEGER(),
+										 'table': sa.types.VARCHAR(length=255)})
+			cnt+=1
+			if np.mod(cnt,100) == 0:
+				print(str(round(float(cnt*100.0/len(game_id_list)),2))+'%')
 			continue
 
-			# bad_gameid_df=pd.DataFrame({'game_id':[game_id],'table':['team_boxscores']})
-			# bad_gameid_df.to_sql('bad_gameids',
-			# 					  con=engine,
-			# 					  schema='nba',
-			# 					  index=False,
-			# 					  if_exists='append',
-			# 					  dtype={'game_id': sa.types.INTEGER(),
-			# 							 'table': sa.types.VARCHAR(length=255)})
-			# cnt+=1
-			# if np.mod(cnt,100) == 0:
-			# 	print(str(round(float(cnt*100.0/len(game_id_list)),2))+'%')
-			# continue
-
 		time.sleep(1)
-	return cnt_success / (cnt_success + cnt_fail)
 			
  
 def main():
@@ -541,24 +531,6 @@ if __name__ == "__main__":
 	main()       
 		
 
-
-
-
-
-
-game_summaries
-player_stats_agg
-
-
-query='''
-	select *
-	from ncaa.player_stats_agg
-	'''
-	
-df=pd.read_sql(query,engine)
-
-fp='/Users/dan/Documents/Archive/Apr26/'
-df.to_csv(fp+'player_stats_agg.csv',index=False)
 
 
 
