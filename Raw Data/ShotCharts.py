@@ -23,22 +23,22 @@ import yaml
 
 
 def get_x_pos(x):
-	if x['left']*(94./100) < 47:
-		x_pos=x['left']*(94./100)
-	else:
-		x_pos=94-x['left']*(94./100)
+	# if x['left']*(94./100) < 47:
+	# 	x_pos=x['left']*(94./100)
+	# else:
+	# 	x_pos=94-x['left']*(94./100)
 
-	return x_pos
+	return x['top']
 
 
 def get_y_pos(x):
 		
-	if x.x_pos <= 47:
-		y_pos=x['top']*(50./100)
-	else:
-		y_pos=50-x['top']*(50./100)
+	# if x.x_pos <= 47:
+	# 	y_pos=x['top']*(50./100)
+	# else:
+	# 	y_pos=50-x['top']*(50./100)
 
-	return y_pos
+	return x['left']
 
 
 def get_result(x):
@@ -53,13 +53,45 @@ def get_result(x):
 def get_shot_type(x):
 	if 'three point' in x.text:
 		return 3
+	elif 'free throw' in x.text:
+		return 1
 	else:
 		return 2
+	
+
+def get_shot_distance(x):
+	if x.shot_type == 1:
+		return None
+	else:
+		return np.sqrt((x['y_pos']-25)**2+(x['x_pos'])**2)
+	
+def get_shot_angle(x):
+	if x.shot_type == 1:
+		return None
+	else:
+		return np.arctan(np.abs(x['y_pos']-25)/(x['x_pos']))
+
+# def get_shot_area(x):
+# 	if x.shot_type == 1:
+# 		return None
+# 	elif x.shot_distance <= 4:
+# 		return 'RA'
+# 	elif (x.y_pos >= 17 and x.y_pos <= 33) and x.x_pos <= 19:
+# 		return 'Paint'
+# 	elif x.shot_type == 3 and x.x_pos <= 14:
+# 		return 'Crnr3'
+# 	elif x.shot_type == 3 and x.x_pos > 14:
+# 		return 'AbvBrk3'
+# 	else:
+# 		return 'MidRng'
+
 
 def get_shot_area(x):
-	if x.shot_distance <= 4:
+	if x.shot_type == 1:
+		return None
+	elif x.shot_distance <= 4:
 		return 'RA'
-	elif (x.y_pos >= 17 and x.y_pos <= 33) and x.x_pos <= 19:
+	elif (x.y_pos >= 17 and x.y_pos <= 33) and x.x_pos <= 15:
 		return 'Paint'
 	elif x.shot_type == 3 and x.x_pos <= 14:
 		return 'Crnr3'
@@ -70,7 +102,9 @@ def get_shot_area(x):
 	
 	
 def get_shot_distance_class(x):
-	if x.shot_distance < 3:
+	if x.shot_type == 1:
+		return None
+	elif x.shot_distance < 3:
 		return '0-3ft'
 	elif x.shot_distance >= 3 and x.shot_distance < 10:
 		return '3-10ft'
@@ -170,12 +204,11 @@ def append_shot_chart(game_id,engine):
 	shot_chart_df['result']=shot_chart_df.apply(lambda x: get_result(x),axis=1)
 	shot_chart_df['x_pos']=shot_chart_df.apply(lambda x: get_x_pos(x),axis=1)
 	shot_chart_df['y_pos']=shot_chart_df.apply(lambda x: get_y_pos(x),axis=1)
-				
-	shot_chart_df['shot_distance']=np.sqrt((shot_chart_df['x_pos']-5.25)**2+(shot_chart_df['y_pos']-25)**2)
-	shot_chart_df['shot_angle']=np.arctan(np.abs(shot_chart_df['y_pos']-25)/(shot_chart_df['x_pos']-5.25))
 
+	shot_chart_df['shot_type']=shot_chart_df.apply(lambda x: get_shot_type(x),axis=1)	
+	shot_chart_df['shot_distance']=shot_chart_df.apply(lambda x: get_shot_distance(x), axis=1)
+	shot_chart_df['shot_angle']=shot_chart_df.apply(lambda x: get_shot_angle(x), axis=1)
 	
-	shot_chart_df['shot_type']=shot_chart_df.apply(lambda x: get_shot_type(x),axis=1)
 	shot_chart_df['shot_area']=shot_chart_df.apply(lambda x: get_shot_area(x),axis=1)
 	shot_chart_df['shot_distance_class']=shot_chart_df.apply(lambda x: get_shot_distance_class(x),axis=1)
 	
@@ -241,9 +274,9 @@ def get_gameids(engine):
 		nba.bad_gameids b on gs.game_id=b.game_id and b.table='shot_chart'
 	where
 		p.game_id is Null
-		and b.game_id is Null
+		--and b.game_id is Null
 		and gs.status='Final'
-		and gs.season in ('2008')
+		and gs.season in ('2023')
 	order by
 		gs.season
 	'''
@@ -257,7 +290,6 @@ def update_shot_chart(engine,game_id_list):
 	cnt=0
 	print('Total Games: ',len(game_id_list))
 	for game_id in game_id_list:
-
 		try:
 			append_shot_chart(game_id,engine)
 			cnt+=1
@@ -292,3 +324,11 @@ def main():
 	
 if __name__ == "__main__":
 	main()
+
+
+
+
+
+
+
+

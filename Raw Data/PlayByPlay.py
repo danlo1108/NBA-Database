@@ -479,7 +479,7 @@ def get_gameids(engine):
 		p.game_id is Null
 		and b.game_id is Null
 		and gs.status='Final'
-		and gs.season in ('2003')
+		and gs.season in ('2023')
 	order by
 		gs.season
 	'''
@@ -504,7 +504,7 @@ def update_play_by_play(engine,game_id_list):
 		except:
 			cnt+=1
 
-			bad_gameid_df=pd.DataFrame({'game_id':[game_id],'table':['team_boxscores']})
+			bad_gameid_df=pd.DataFrame({'game_id':[game_id],'table':['play_by_play']})
 			bad_gameid_df.to_sql('bad_gameids',
 								  con=engine,
 								  schema='nba',
