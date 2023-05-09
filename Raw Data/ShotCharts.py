@@ -88,7 +88,7 @@ def get_shot_angle(x):
 
 def get_shot_area(x):
 	if x.shot_type == 1:
-		return None
+		return 'FT'
 	elif x.shot_distance <= 4:
 		return 'RA'
 	elif (x.y_pos >= 17 and x.y_pos <= 33) and x.x_pos <= 15:
