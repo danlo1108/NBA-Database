@@ -290,7 +290,6 @@ def update_game_summaries(engine,dates):
 	cnt=0
 	bad_dates=[]
 	for date_str in dates: 
-		append_game_summary(date_str,engine)
 		try:
 			append_game_summary(date_str,engine)
 			cnt+=1
