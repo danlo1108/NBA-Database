@@ -44,8 +44,8 @@ def get_y_pos(x):
 def get_result(x):
 	if 'make' in x.text or 'made' in x.text:
 		return 'made'
-	elif 'miss' in x.text or 'miss' in x.text:
-		return 'miss'
+	elif 'miss' in x.text or 'block' in x.text:
+		return 'missed'
 	else:
 		return None
 

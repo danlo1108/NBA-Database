@@ -268,15 +268,16 @@ def get_dates(engine):
 		nba.game_summaries
 	where
 		status='Final'
-		and season='2023'
+		and season='2024'
 
 	'''
 
 	#Iterate through date strings to get game summaries for each date
 
 	#start = pd.read_sql(date_query,engine).loc[0]['min_date']
-	start_date = pd.read_sql(date_query,engine).loc[0]['max_date'] + timedelta(days=1)
+	#start_date = pd.read_sql(date_query,engine).loc[0]['max_date'] - timedelta(days=1)
 
+	start_date = datetime.date.today() - timedelta(days=1)
 	end_date = datetime.date.today() - timedelta(days=1)
 
 	dates = pd.date_range(start=start_date, end=end_date, freq='D')
