@@ -119,11 +119,11 @@ def append_game_summary(date_str,engine):
 				else:
 					home_team_winner=False
 
-				if 'records' in competitor:
+				try:
 					home_team_overall_record=competitor['records'][0]['summary']
 					home_team_home_record=competitor['records'][1]['summary']
 					home_team_away_record=None
-				else:
+				except:
 					home_team_overall_record=None
 					home_team_home_record=None
 					home_team_away_record=None
@@ -150,11 +150,11 @@ def append_game_summary(date_str,engine):
 				else:
 					away_team_winner=False
 
-				if 'records' in competitor:
+				try:
 					away_team_overall_record=competitor['records'][0]['summary']
 					away_team_home_record=None
 					away_team_away_record=competitor['records'][1]['summary']
-				else:
+				except:
 					away_team_overall_record=None
 					away_team_home_record=None
 					away_team_away_record=None
