@@ -479,7 +479,7 @@ def get_gameids(engine):
 		p.game_id is Null
 		and b.game_id is Null
 		and gs.status='Final'
-		and gs.season in ('2023')
+		and gs.season in ('2024')
 	order by
 		gs.season
 	'''
