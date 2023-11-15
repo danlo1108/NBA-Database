@@ -40,7 +40,6 @@ def get_engine():
 def calculate_player_stats(engine):
 
 	fp=os.path.dirname(os.path.realpath(__file__))
-	fp='/Users/dan/Documents/NBA-Database/Calculated Data'
 	player_stats_agg_query=open(fp+'/PlayerStatsAgg.sql').read()
 	
 	player_stats_agg=pd.read_sql(player_stats_agg_query,engine)
