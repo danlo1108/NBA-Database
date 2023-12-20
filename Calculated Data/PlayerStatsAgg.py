@@ -44,11 +44,12 @@ def calculate_player_stats(engine):
 	
 	player_stats_agg=pd.read_sql(player_stats_agg_query,engine)
 
+	engine.execute("TRUNCATE TABLE nba.player_stats_agg RESTART IDENTITY;")
 	player_stats_agg.to_sql('player_stats_agg',
 						 con=engine,
 						 schema='nba',
 						 index=False,
-						 if_exists='replace',
+						 if_exists='append',
 						 dtype={'player': sa.types.VARCHAR(length=255),
 								'player_id': sa.types.INTEGER(),
 								'team': sa.types.VARCHAR(length=255),
